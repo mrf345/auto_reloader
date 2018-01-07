@@ -1,4 +1,4 @@
-# auto_reloader 0.1 beta
+# auto_reloader (Beta)
 ### [jQuery][ba494823] based, simple page reloader
 
   [ba494823]: https://jquery.com "jQuery website"
@@ -16,7 +16,7 @@
   <script source="auto_reloader.js" type="text/javascript"></script>
   <script type="text/javascript">
     $(document).ready(function () {
-      var reloader = auto_reloader({
+      const reloader = AutoReloader({
         identifier: '.reload'
       })
     });
@@ -43,15 +43,15 @@ this.options = { // inserted options, with defaults
 ```
 ## Functions :
 #### To use any of the following functions, you have to get an instance of the constructor, which we did in the Setup section :
-` var reloader = auto_reloader()` </br>
+` const reloader = auto_reloader()` </br>
 ` reloader.following_functions()`
 
 ```javascript
-var start = function start () {
+const start = function start () {
   // starting the auto reload, changing style
 }
 
-var stop = function stop () {
+const stop = function stop () {
   // stopping the auto reload clearing timeouts restoring style
 }
 ```

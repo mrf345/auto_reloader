@@ -9,32 +9,31 @@ Dependencies: jquery
 License : MPL 2.0
 today's lesson : simplicity is a luxury, one mustn't expose.
 
-*/
-
-/* This Source Code Form is subject to the terms of the Mozilla Public
+ * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-// validatng functions
- var checkBool = function checkBool (args) {
-   // check if passed args are 'true' or 'false' type
-   for (var a in args) {
-     if (args[a] !== 'true' && args[a] !== 'false') return false
-   }
-   return true
- }
- var checkType = function checkType (type, args) {
-   // checking the type of each varible in the passed array
-   for (var a in args) {
-     if (typeof args[a] !== type) return false
-   }
-   return true
- }
+ */
 
-var auto_reloader = function autoReloader (options) {
+const AutoReloader = function autoReloader (options) {
+  // validatng functions
+  const checkBool = function checkBool (args) {
+    // check if passed args are 'true' or 'false' type
+    for (let a in args) {
+      if (args[a] !== 'true' && args[a] !== 'false') return false
+    }
+    return true
+  }
+  const checkType = function checkType (type, args) {
+    // checking the type of each varible in the passed array
+    for (let a in args) {
+      if (typeof args[a] !== type) return false
+    }
+    return true
+  }
+
   // main class, contains all
   if (typeof options !== 'object') options = {}
-
   this.options = { // inserted options, with defaults
     identifier: options.identifier || '.autoreloader', // class or id to identify the autoloading element with
     duration: options.duration * 1000 || 5000, // duration number in seconds, in-which each reload is due
@@ -83,7 +82,7 @@ var auto_reloader = function autoReloader (options) {
 // Starter and Stopper
 
   // global name to access from events
-  var start = function start () {
+  const start = function start () {
     // starting the auto reload, changing style
     if (sessionStorage.active !== undefined) {
       this.set_style(false)
@@ -96,7 +95,7 @@ var auto_reloader = function autoReloader (options) {
     }
   }
   // global name to access from events
-  var stop = function stop () {
+  const stop = function stop () {
     // stopping the auto reload clearing timeouts restoring style
     this.restore_style()
     if (this.defaults.sleeps.length > 0) {
@@ -135,10 +134,10 @@ var auto_reloader = function autoReloader (options) {
   }
   this.set_style = function setStyle (notactive = true) {
     // setting the button style with style and class
-    for (var i = 0; this.options.add_classes.length > i; i += 1) {
+    for (let i = 0; this.options.add_classes.length > i; i += 1) {
       $(this.options.identifier).addClass(this.options.add_classes[i])
     }
-    for (i = 0; this.options.add_classes_span.length > i; i += 1) {
+    for (let i = 0; this.options.add_classes_span.length > i; i += 1) {
       $(this.options.identifier + '> span').addClass(this.options.add_classes_span[i])
     }
     if ($(this.options.identifier).attr('style') !== undefined && notactive) {
@@ -156,12 +155,12 @@ var auto_reloader = function autoReloader (options) {
 
   this.restore_style = function restoreStyle () {
     // restoring the button previous style
-    for (var i = 0; this.options.add_classes.length > i; i += 1) {
+    for (let i = 0; this.options.add_classes.length > i; i += 1) {
       if ($(this.options.identifier).hasClass(this.options.add_classes[i])) {
         $(this.options.identifier).removeClass(this.options.add_classes[i])
       }
     }
-    for (i = 0; this.options.add_classes_span.length > i; i += 1) {
+    for (let i = 0; this.options.add_classes_span.length > i; i += 1) {
       if ($(this.options.identifier + ' > span').hasClass(this.options.add_classes_span[i])) {
         $(this.options.identifier + ' > span').removeClass(this.options.add_classes_span[i])
       }
