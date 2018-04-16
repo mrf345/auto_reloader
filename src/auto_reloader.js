@@ -1,32 +1,24 @@
 /* global $, sessionStorage, location, jQuery */ // false alarm linter
 
 /*
-
-Script : auto_reloader 0.1 beta
-Author : Mohamed Feddad
-Date : 2017/12/27
-Dependencies: jquery
-License : MPL 2.0
-today's lesson : simplicity is a luxury, one mustn't expose.
-
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
-
  */
 
-const AutoReloader = function autoReloader (options) {
+var AutoReloader = function autoReloader (options) {
+  var returnit = {}
   // validatng functions
-  const checkBool = function checkBool (args) {
+  var checkBool = function checkBool (args) {
     // check if passed args are 'true' or 'false' type
-    for (let a in args) {
+    for (var a in args) {
       if (args[a] !== 'true' && args[a] !== 'false') return false
     }
     return true
   }
-  const checkType = function checkType (type, args) {
+  var checkType = function checkType (type, args) {
     // checking the type of each varible in the passed array
-    for (let a in args) {
+    for (var a in args) {
       if (typeof args[a] !== type) return false
     }
     return true
@@ -34,7 +26,7 @@ const AutoReloader = function autoReloader (options) {
 
   // main class, contains all
   if (typeof options !== 'object') options = {}
-  this.options = { // inserted options, with defaults
+  returnit.options = { // inserted options, with defaults
     identifier: options.identifier || '.autoreloader', // class or id to identify the autoloading element with
     duration: options.duration * 1000 || 5000, // duration number in seconds, in-which each reload is due
     add_classes: options.add_classes || ['btn-danger'], // css classes to add or remove with start or stop
@@ -45,61 +37,61 @@ const AutoReloader = function autoReloader (options) {
     auto_start: options.auto_start || 'false' // to start auto reloading without element click
   }
 
-  this.defaults = {
+  returnit.defaults = {
     sleeps: []  // to store timeouts
   }
 
-  this.__init__ = function __init__ () {
+  returnit.__init__ = function __init__ () {
   // Validation
     // Type validation
     if (!checkType('string', [
-      this.options.add_classes]) && !(
-        this.options.add_classes instanceof Array)
+      returnit.options.add_classes]) && !(
+        returnit.options.add_classes instanceof Array)
       ) throw new TypeError('auto_reloader(options) add_classes requires array of strings')
     if (!checkType('string', [
-      this.options.add_classes_span]) && !(
-        this.options.add_classes_span instanceof Array)
+      returnit.options.add_classes_span]) && !(
+        returnit.options.add_classes_span instanceof Array)
       ) throw new TypeError('auto_reloader(options) add_classes_span requires array of strings')
     if (!checkType('string', [
-      this.options.identifier,
-      this.options.add_style
+      returnit.options.identifier,
+      returnit.options.add_style
     ])) throw new TypeError('auto_reloader(options) identifier, add_style require strings')
     if (!checkBool([
-      this.options.remember_position,
-      this.options.fix_rotation
+      returnit.options.remember_position,
+      returnit.options.fix_rotation
     ])) throw new TypeError('auto_reloader(options) remember_position, fix_rotation require "true" or "false"')
-    if (typeof this.options.duration !== 'number' || this.options.duration < 0) throw new TypeError('auto_reloader(options) duration requires valid number')
+    if (typeof returnit.options.duration !== 'number' || returnit.options.duration < 0) throw new TypeError('auto_reloader(options) duration requires valid number')
     // Value validation
-    if (!(this.options.identifier.startsWith('.')) && !(this.options.identifier.startsWith('#'))) throw new Error('auto_reloader(options) identifier should start with # or .')
-    if ($(this.options.identifier).length <= 0 && this.options.auto_start === 'false') throw new Error('auto_reloader(options) can not find any elements with identifier')
+    if (!(returnit.options.identifier.startsWith('.')) && !(returnit.options.identifier.startsWith('#'))) throw new Error('auto_reloader(options) identifier should start with # or .')
+    if ($(returnit.options.identifier).length <= 0 && returnit.options.auto_start === 'false') throw new Error('auto_reloader(options) can not find any elements with identifier')
   // Setup directions
-    $(this.options.identifier).click(function (event) {
+    $(returnit.options.identifier).click(function (event) {
       if (sessionStorage.active === undefined) start(); else stop() // start or stop if clicked
     })
-    if (sessionStorage.active !== undefined || this.options.auto_start === 'true') start() // start if not first time
+    if (sessionStorage.active !== undefined || returnit.options.auto_start === 'true') start() // start if not first time
   }
 
 // Starter and Stopper
 
   // global name to access from events
-  const start = function start () {
+  var start = function start () {
     // starting the auto reload, changing style
     if (sessionStorage.active !== undefined) {
-      this.set_style(false)
-      if (this.options.remember_position) $(window).scrollTop(sessionStorage.position) // to remember position
-      if (this.options.fix_rotation) this.check_screen() // to watch out for screen size change
-      this.reload() // timeout to reload
+      returnit.set_style(false)
+      if (returnit.options.remember_position) $(window).scrollTop(sessionStorage.position) // to remember position
+      if (returnit.options.fix_rotation) returnit.check_screen() // to watch out for screen size change
+      returnit.reload() // timeout to reload
     } else {
-      this.set_style()
-      this.reload(0)
+      returnit.set_style()
+      returnit.reload(0)
     }
   }
   // global name to access from events
-  const stop = function stop () {
+  var stop = function stop () {
     // stopping the auto reload clearing timeouts restoring style
-    this.restore_style()
-    if (this.defaults.sleeps.length > 0) {
-      $.each(this.defaults.sleeps, function (i, value) {
+    returnit.restore_style()
+    if (returnit.defaults.sleeps.length > 0) {
+      $.each(returnit.defaults.sleeps, function (i, value) {
         clearTimeout(value)
       })
     }
@@ -109,10 +101,10 @@ const AutoReloader = function autoReloader (options) {
 
 // When Started
 
-  this.reload = function reload (duration = this.options.duration) {
+  returnit.reload = function reload (duration = sessionStorage.duration || returnit.options.duration) {
     // setting timeout to reload
     // clearing timeouts before loading
-    this.defaults.sleeps.push(
+    returnit.defaults.sleeps.push(
       setTimeout(function () {
         sessionStorage.position = $(window).scrollTop() // getting screen position
         sessionStorage.active = 'true' // to indeicate not a first time
@@ -120,7 +112,7 @@ const AutoReloader = function autoReloader (options) {
       }, duration)
     )
   }
-  this.check_screen = function checkScreen (
+  returnit.check_screen = function checkScreen (
     // setting event watch for screen resize or rotation and reload if so
     height = $(window).height(),
     width = $(window).width()) {
@@ -132,51 +124,62 @@ const AutoReloader = function autoReloader (options) {
       })
     })
   }
-  this.set_style = function setStyle (notactive = true) {
+  returnit.set_style = function setStyle (notactive = true) {
     // setting the button style with style and class
-    for (let i = 0; this.options.add_classes.length > i; i += 1) {
-      $(this.options.identifier).addClass(this.options.add_classes[i])
+    for (var i = 0; returnit.options.add_classes.length > i; i += 1) {
+      $(returnit.options.identifier).addClass(returnit.options.add_classes[i])
     }
-    for (let i = 0; this.options.add_classes_span.length > i; i += 1) {
-      $(this.options.identifier + '> span').addClass(this.options.add_classes_span[i])
+    for (var i = 0; returnit.options.add_classes_span.length > i; i += 1) {
+      $(returnit.options.identifier + '> span').addClass(returnit.options.add_classes_span[i])
     }
-    if ($(this.options.identifier).attr('style') !== undefined && notactive) {
-      sessionStorage.style = $(this.options.identifier).attr('style') // storing style
-      $(this.options.identifier).attr(
-        'style', sessionStorage.style + ';' + this.options.add_style
+    if ($(returnit.options.identifier).attr('style') !== undefined && notactive) {
+      sessionStorage.style = $(returnit.options.identifier).attr('style') // storing style
+      $(returnit.options.identifier).attr(
+        'style', sessionStorage.style + ';' + returnit.options.add_style
       ) // adding style to existing one
     } else {
-      if (sessionStorage.style !== undefined) $(this.options.identifier).attr('style', sessionStorage.style + ';' + this.options.add_style)
-      else $(this.options.identifier).attr('style', this.options.add_style)
+      if (sessionStorage.style !== undefined) $(returnit.options.identifier).attr('style', sessionStorage.style + ';' + returnit.options.add_style)
+      else $(returnit.options.identifier).attr('style', returnit.options.add_style)
     }
   }
 
 // When Stopped
 
-  this.restore_style = function restoreStyle () {
+  returnit.restore_style = function restoreStyle () {
     // restoring the button previous style
-    for (let i = 0; this.options.add_classes.length > i; i += 1) {
-      if ($(this.options.identifier).hasClass(this.options.add_classes[i])) {
-        $(this.options.identifier).removeClass(this.options.add_classes[i])
+    for (var i = 0; returnit.options.add_classes.length > i; i += 1) {
+      if ($(returnit.options.identifier).hasClass(returnit.options.add_classes[i])) {
+        $(returnit.options.identifier).removeClass(returnit.options.add_classes[i])
       }
     }
-    for (let i = 0; this.options.add_classes_span.length > i; i += 1) {
-      if ($(this.options.identifier + ' > span').hasClass(this.options.add_classes_span[i])) {
-        $(this.options.identifier + ' > span').removeClass(this.options.add_classes_span[i])
+    for (var i = 0; returnit.options.add_classes_span.length > i; i += 1) {
+      if ($(returnit.options.identifier + ' > span').hasClass(returnit.options.add_classes_span[i])) {
+        $(returnit.options.identifier + ' > span').removeClass(returnit.options.add_classes_span[i])
       }
     }
     if (sessionStorage.style !== undefined) {
-      $(this.options.identifier).attr('style', sessionStorage.style)
+      $(returnit.options.identifier).attr('style', sessionStorage.style)
       sessionStorage.style = false
     } else { // if style not stored and equal to iserted style, will be emptied
-      if ($(this.options.identifier).attr('style') === this.options.add_style) {
-        $(this.options.identifier).attr('style', '')
+      if ($(returnit.options.identifier).attr('style') === returnit.options.add_style) {
+        $(returnit.options.identifier).attr('style', '')
       }
     }
   }
 
+// Interactive settings
+
+  returnit.ask = function ask (msg="Enter new auto-reload duration in seconds : ") {
+    // to prompt user to set new duration
+    var newDuration = window.prompt(
+      msg,
+      sessionStorage.duration / 1000 || returnit.options.duration / 1000
+    )
+    sessionStorage.duration = newDuration > 0 ? newDuration * 1000 : returnit.options.duration
+  }
+
 // Initiate and return the class
 
-  this.__init__()
-  return this
+  returnit.__init__()
+  return returnit
 }
