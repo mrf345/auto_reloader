@@ -179,5 +179,5 @@ var AskReloader = function ask (msg="Enter new auto-reload duration in seconds :
     msg,
     sessionStorage.duration / 1000 || defaultDuration / 1000
   )
-  sessionStorage.duration = newDuration > 0 ? newDuration * 1000 : defaultDuration
+  sessionStorage.duration = newDuration > 0 ? newDuration * 1000 : sessionStorage.duration ? sessionStorage.duration : defaultDuration
 }
